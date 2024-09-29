@@ -1,0 +1,21 @@
+name: Test2
+
+on:
+  push:
+    branches:
+      - test-olle
+  
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan the web application
+    steps:
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.6.1
+        with: 
+          docker_name: 'owasp/zap2docker-weekly'
+          target: 'http://testphp.vulnweb.com/'
+          fail_action: true  # Fail the workflow if vulnerabilities are found
